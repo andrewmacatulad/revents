@@ -25,7 +25,7 @@ const validate = combineValidators({
   )()
 });
 
-const Account = ({
+const AccountPage = ({
   error,
   invalid,
   submitting,
@@ -103,4 +103,4 @@ const Account = ({
   );
 };
 
-export default reduxForm({ form: "account", validate })(Account);
+export default reduxForm({ form: "account", validate })(AccountPage);
