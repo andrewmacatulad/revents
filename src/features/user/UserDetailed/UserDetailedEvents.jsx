@@ -1,14 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  Card,
-  Grid,
-  Header,
-  Image,
-  Menu,
-  Segment,
-  Tab
-} from "semantic-ui-react";
+import { Card, Grid, Header, Image, Segment, Tab } from "semantic-ui-react";
 import format from "date-fns/format";
 
 const panes = [
@@ -46,16 +38,6 @@ const UserDetailedEvents = ({ eventsLoading, events, changeTab }) => {
                 </Card.Content>
               </Card>
             ))}
-
-          {/* <Card>
-            <Image src={"/assets/categoryImages/drinks.jpg"} />
-            <Card.Content>
-              <Card.Header textAlign="center">Event Title</Card.Header>
-              <Card.Meta textAlign="center">
-                28th March 2018 at 10:00 PM
-              </Card.Meta>
-            </Card.Content>
-          </Card> */}
         </Card.Group>
       </Segment>
     </Grid.Column>
