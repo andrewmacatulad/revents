@@ -80,6 +80,7 @@ export const getEventsForDashboard = lastEvent => async (
   dispatch,
   getState
 ) => {
+  let today = new Date(Date.now());
   const firestore = firebase.firestore();
   // const eventsQuery = firestore.collection("events").where("date", ">=", today);
   const eventsRef = firestore.collection("events");
@@ -95,12 +96,12 @@ export const getEventsForDashboard = lastEvent => async (
 
     lastEvent
       ? (query = eventsRef
-          // .where("date", ">=", today)
+          .where("date", ">=", today)
           .orderBy("date")
           .startAfter(startAfter)
           .limit(2))
       : (query = eventsRef
-          // .where("date", ">=", today)
+          .where("date", ">=", today)
           .orderBy("date")
           .limit(2));
     let querySnap = await query.get();
