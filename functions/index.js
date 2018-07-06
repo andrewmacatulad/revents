@@ -3,6 +3,14 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp(functions.config().firebase);
 
+// const newFollower = user => {
+//   return {
+//     displayName: user.displayName,
+//     photoURL: user.hostPhotoURL,
+//     city: user.city || "Unknown City"
+//   };
+// };
+
 const newActivity = (type, event, id) => {
   return {
     type: type,
@@ -15,6 +23,7 @@ const newActivity = (type, event, id) => {
     eventId: id
   };
 };
+
 exports.createActivity = functions.firestore
   .document("events/{eventId}")
   .onCreate(event => {
@@ -68,5 +77,55 @@ exports.cancelActivity = functions.firestore
       })
       .catch(err => {
         return console.log("Error adding activity", err);
+      });
+  });
+
+exports.userFollowers = functions.firestore
+  .document("users/{followerUid}/following/{followingUid}")
+  .onCreate((event, context) => {
+    const followerUid = context.params.followerUid;
+    const followingUid = context.params.followingUid;
+
+    const followerDoc = admin
+      .firestore()
+      .collection("users")
+      .doc(followerUid);
+    console.log(followerDoc);
+
+    return followerDoc.get().then(doc => {
+      let userData = doc.data();
+      console.log({ userData });
+      let follower = {
+        displayName: userData.displayName,
+        photoURL: userData.photoURL || "/assets/user.png",
+        city: userData.city || "Unknown city"
+      };
+      return admin
+        .firestore()
+        .collection("users")
+        .doc(followingUid)
+        .collection("followers")
+        .doc(followerUid)
+        .set(follower);
+    });
+  });
+
+exports.userUnfollowers = functions.firestore
+  .document("users/{followerUid}/following/{followingUid}")
+  .onDelete((event, context) => {
+    const followerUid = context.params.followerUid;
+    const followingUid = context.params.followingUid;
+    return admin
+      .firestore()
+      .collection("users")
+      .doc(followingUid)
+      .collection("followers")
+      .doc(followerUid)
+      .delete()
+      .then(() => {
+        return console.log("doc deleted");
+      })
+      .catch(err => {
+        return console.log(err);
       });
   });
