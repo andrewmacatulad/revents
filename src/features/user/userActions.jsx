@@ -160,12 +160,12 @@ export const goingToEvent = event => async (dispatch, getState) => {
   dispatch(asyncActionStart());
   const firestore = firebase.firestore();
   const user = firebase.auth().currentUser;
-  const photoURL = getState().firebase.profile.photoURL;
+  const profile = getState().firebase.profile;
   const attendee = {
     going: true,
     joinDate: Date.now(),
-    photoURL: photoURL || "/assets/user.png",
-    displayName: user.displayName,
+    photoURL: profile.photoURL || "/assets/user.png",
+    displayName: profile.displayName,
     host: false
   };
   try {
@@ -186,15 +186,6 @@ export const goingToEvent = event => async (dispatch, getState) => {
         host: false
       });
     });
-    // await firestore.update(`events/${event.id}`, {
-    //   [`attendees.${user.uid}`]: attendee
-    // });
-    // await firestore.set(`event_attendee/${event.id}_${event.uid}`, {
-    //   eventId: event.id,
-    //   userUid: user.uid,
-    //   eventDate: event.date,
-    //   host: false
-    // });
     dispatch(asyncActionFinish());
     toastr.success("Success", "You have signed up to the event");
   } catch (error) {

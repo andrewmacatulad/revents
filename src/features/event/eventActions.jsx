@@ -75,7 +75,6 @@ export const updateEvent = event => {
             eventDate: event.date
           });
         }
-        console.log(batch);
         await batch.commit();
       } else {
         await eventDocRef.update(event);

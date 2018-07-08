@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { firestoreConnect, isEmpty } from "react-redux-firebase";
 import { Grid } from "semantic-ui-react";
+import { toastr } from "react-redux-toastr";
 
 import UserDetailedHeader from "./UserDetailedHeader";
 import UserDetailedDescription from "./UserDetailedDescription";
@@ -45,7 +46,15 @@ const actions = {
 };
 class UserDetailedPage extends Component {
   async componentDidMount() {
+    let user = await this.props.firestore.get(
+      `users/${this.props.match.params.id}`
+    );
+    if (!user.exists) {
+      toastr.error("Not Found", "User not Found");
+      this.props.history.push("/error");
+    }
     await this.props.getUserEvents(this.props.userUid);
+
     // console.log(events);
   }
   changeTab = (e, data) => {
@@ -65,7 +74,7 @@ class UserDetailedPage extends Component {
       following
     } = this.props;
     const isCurrentUser = auth.uid === match.params.id;
-    const loading = Object.values(requesting).some(a => a === true);
+    const loading = requesting[`users/${match.params.id}`];
     const isFollowing = !isEmpty(following);
     if (loading) {
       return <LoadingComponent inverted={true} />;
